@@ -29,3 +29,9 @@
     flex-direction: row;
     justify-content: space-between;
 }
+.button {
+    margin: 0 5px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid grey;
+}

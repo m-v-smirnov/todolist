@@ -46,14 +46,14 @@ class Todos extends React.Component {
 				</form>
 			<div>
 			{this.state.todosArr.map((elem,index) => 
-			<Todoslines elem={elem} index={index} rep={this.state.viewRepres}  />)}
+			<Todoslines elem={elem} index={index} rep={this.state.viewRepres}  key={index}/>)}
 			</div>
 			<div className={styles.controls}>
 			<div>TodosLeftFunction soon</div>
 				<div>
-					<a href="#all" onClick = {() => this.setState({viewRepres: 0})} > All </a>
-					<a href="#active" onClick = {() => this.setState({viewRepres: 1})} > Active </a>
-					<a href="#complete" onClick = {() => this.setState({viewRepres: 2})} > Completed </a>
+					<a className={styles.button} href="#all" onClick = {() => this.setState({viewRepres: 0})} > All </a>
+					<a className={styles.button} href="#active" onClick = {() => this.setState({viewRepres: 1})} > Active </a>
+					<a className={styles.button} href="#complete" onClick = {() => this.setState({viewRepres: 2})} > Completed </a>
 				</div>
 				<div>refs for clearing completed</div>
 			</div>

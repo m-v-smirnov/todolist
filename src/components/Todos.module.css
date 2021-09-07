@@ -1,0 +1,31 @@
+.common {
+    padding: 50px 0;
+    background-color:powderblue;
+}
+.header {
+    margin: 0 auto;
+    width: 600px;
+    text-align: center;
+    color: green;
+}
+.form {
+    width: fit-content;
+    margin: 0 auto;
+}
+.input {
+    margin: 0 auto;
+    padding: 20px 20px;
+    width: 600px;
+    border: black solid 1px;
+    background-color: #f2f2f2;
+}
+.controls {
+    margin: 0 auto;
+    padding: 12px 20px;
+    width: 600px;
+    border: black solid 1px;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

@@ -1,63 +1,65 @@
 import React from 'react';
-let testArr = ["сделать","хорошо подумать","не делать"];
+import Todoslines from './Todoslines';
+import Todosleft from './Todosleft';
+import styles from './Todos.module.css';
 
-function Todoslines(props) {
-    
-        const intArr = props.Arr;
-        return (
-            intArr.map((elem,index) => 
-            <div key={index} className='todos__list'>
-                <input className='todos__check' type="checkbox" id={index} name={index} value="something_to_do" />
-                <label for={index}> {elem}</label>
-            </div>)
-        );
-    
-} 
-
-class Inputform extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: ''      }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({value: event.target.value});
-  }
-
-  handleSubmit(event) {
-    testArr.push(this.state.value);
-    event.preventDefault();
-    console.log(this.state.value);
-    console.log(testArr);
-    this.state.value = '';
-  }
-    render() {
-        return (
-            <form className='todos__form' onSubmit={this.handleSubmit}>
-                <input className='todos__input' type='text' value={this.state.value} placeholder='Something To Do' onChange={this.handleChange} />
-            </form>);
-    }
-}
 
 class Todos extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			viewRepres : 0,
+			value: '',
+			todosArr: new Array()
+		}
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
 
-    render() {
-      return (<div className='todos'>
-        <div className='todos__header'>
-            <h1>todo list:</h1>
-        </div>  
-        <Inputform />
-        <div>
-        <Todoslines Arr={testArr}/>
-        </div>
-        <div className='todos__controls'>
-        todos control here soon
-        </div>
-      </div>);
-    }
+	handleChange(event) {
+		this.setState({ value: event.target.value });
+	}
+
+	handleSubmit(event) {
+		const newArr = this.state.todosArr.slice();
+		event.preventDefault();
+		if (this.state.value) {
+			newArr.push(this.state.value);
+			this.setState({
+			value: '',
+			todosArr: [...this.state.todosArr, this.state.value]
+			})
+		}
+
+	}
+	render() {
+		return (<div className={styles.common}>
+			<div className={styles.header}>
+				<h1>todo list:</h1>
+			</div>
+				<form className={styles.form} 
+				onSubmit={this.handleSubmit}>
+					<input className={styles.input} 
+					type='text' value={this.state.value} 
+					placeholder='Something To Do' 
+					onChange={this.handleChange} />
+				</form>
+			<div>
+			{this.state.todosArr.map((elem,index) => 
+			<Todoslines elem={elem} index={index} rep={this.state.viewRepres}  />)}
+			</div>
+			<div className={styles.controls}>
+			<div>TodosLeftFunction soon</div>
+				<div>
+					<a href="#all" onClick = {() => this.setState({viewRepres: 0})} > All </a>
+					<a href="#active" onClick = {() => this.setState({viewRepres: 1})} > Active </a>
+					<a href="#complete" onClick = {() => this.setState({viewRepres: 2})} > Completed </a>
+				</div>
+				<div>refs for clearing completed</div>
+			</div>
+		</div>)
+	}
 }
 
 export default Todos;
+//<div>TodosLeftFunction soon</div>		<=>		<Todosleft Arr={this.state.todosArr} />

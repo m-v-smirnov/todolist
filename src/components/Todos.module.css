@@ -44,3 +44,9 @@
     border: 1px solid red;
     background-color: silver;
 }
+.delButton {
+    opacity: 0%;
+}
+.hideDelButton {
+    opacity: 100%;
+}

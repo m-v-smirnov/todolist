@@ -1,21 +1,17 @@
 import React from 'react';
 import Todoslines from './Todoslines';
 import Todosleft from './Todosleft';
+import Todosisdone from './Todosisdone';
 import styles from './Todos.module.css';
 
 
 class Todos extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			viewRepres: 0,
-			value: '',
-			todosArr: [],
-			itemId: 0,
-		}
-		// this.handleChange = this.handleChange.bind(this);
-		// this.handleSubmit = this.handleSubmit.bind(this);
-	}
+	state = {
+				viewRepres: 0,
+				value: '',
+				todosArr: [],
+				itemId: 0,
+			}
 
 	handleChange = (event) => {
 		this.setState({ value: event.target.value });
@@ -30,14 +26,25 @@ class Todos extends React.Component {
 				isdone: false,
 				id: this.state.itemId,
 			};
-			this.setState({ itemId: this.state.itemId + 1 });
 
 			newArr.push(obj);
 			this.setState({
 				value: '',
-				todosArr: [...newArr]
+				todosArr: newArr,
+				itemId: this.state.itemId + 1
 			})
 		}
+	}
+
+	setItem = (str, index) => {
+		const newArr = this.state.todosArr.slice();
+		newArr[index].item = str;
+		this.setState({ todosArr: [...newArr] });
+	}
+	setItemStatus = (state, index) => {
+		const newArr = this.state.todosArr.slice();
+		newArr[index].isdone = state;
+		this.setState({ todosArr: [...newArr] });
 	}
 
 	deleteElemById = (id) => {
@@ -46,6 +53,24 @@ class Todos extends React.Component {
 				return item.id !== id;
 			})
 		});
+	}
+
+	deleteAllIsDone = () => {
+		this.setState({
+			todosArr: this.state.todosArr.filter((item) => {
+				return item.isdone === false;
+			})
+		});
+		this.setState({allActive : true});
+	}
+
+	notAllActive = () => {
+		for (let i=0;i<this.state.todosArr.length; i++) {
+			if (this.state.todosArr[i].isdone) {
+				return true;	
+			}
+		}
+		return false;
 	}
 
 	render() {
@@ -70,14 +95,16 @@ class Todos extends React.Component {
 							elem={elem}
 							index={index}
 							del={this.deleteElemById}
+							setItem={this.setItem}
+							setItemStatus={this.setItemStatus}
 							rep={this.state.viewRepres}
-							key={index}
+							key={elem.id}
 						/>
 					)}
 				</div>
 				<div className={styles.controls}>
 					<div>
-						<Todosleft Arr={this.state.todosArr} />
+						<Todosleft arr={this.state.todosArr} />
 					</div>
 					<div>
 						<a
@@ -120,7 +147,19 @@ class Todos extends React.Component {
 							Completed
 						</a>
 					</div>
-					<div>del function soon...</div>
+					<div className={this.notAllActive() ? styles.hideDelButton : styles.delButton}>
+						<a
+							className={styles.button}
+							href="#deleteAllcomleted"
+							onClick={(e) => {
+								this.deleteAllIsDone();
+								e.preventDefault();
+							}}
+						> 
+							delete all completed 
+						</a>
+						<Todosisdone arr={this.state.todosArr}/>
+					</div>
 				</div>
 			</div>)
 	}

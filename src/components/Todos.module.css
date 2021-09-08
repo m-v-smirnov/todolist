@@ -17,6 +17,7 @@
     padding: 20px 20px;
     width: 600px;
     border: black solid 1px;
+    border-radius: 5px;
     background-color: #f2f2f2;
 }
 .controls {
@@ -24,6 +25,7 @@
     padding: 12px 20px;
     width: 600px;
     border: black solid 1px;
+    border-radius: 5px;
     background-color: #f2f2f2;
     display: flex;
     flex-direction: row;
@@ -34,4 +36,11 @@
     text-decoration: none;
     color: black;
     border: 1px solid grey;
+}
+.buttonActive {
+    margin: 0 5px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid red;
+    background-color: silver;
 }

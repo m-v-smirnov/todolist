@@ -3,15 +3,13 @@ function Todosleft(props) {
 
 	if (props.Arr.length > 0) {
 		for (let index = 0; index < props.Arr.length; index++) {
-			let elem = document.getElementById(index);
-			console.log(elem);
-			if (!elem.checked) {
+			if (!props.Arr[index].isdone) {
 				sum = sum + 1;
 			}
 		}
 	}
 	return (
-		<span>{sum} items expected</span>
+		<span>{sum} items left</span>
 	);
 }
 

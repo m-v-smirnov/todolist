@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Todoslines.module.css';
+import {toggleTodo as toggleTodoAction} from '../store/actions';
+import { connect } from "react-redux";
 
 function Todoslines(props) {
 	const [inputState, setState] = useState(false);
@@ -16,10 +18,10 @@ function Todoslines(props) {
 				type="checkbox"
 				id={props.elem.id}
 				name={props.elem.id}
-				value={props.elem.isdone}
+				value={props.isDone}
 				onChange={(e) => {
 					setState(e.target.checked);
-					props.setItemStatus(e.target.checked,props.index);
+					props.toggleTodo(props.elem.id);
 				}
 				}
 			/>
@@ -54,6 +56,19 @@ function Todoslines(props) {
 		</div>)
 
 }
-export default Todoslines;
+
+const dispatchToProps = (dispatch) => {
+	return {
+		toggleTodo : (id) => dispatch(toggleTodoAction(id))
+	}
+}
+
+const stateToProps = (state) => {
+	return {
+		isDone: state.todoStore.todos.isdone
+	}
+}
+export default connect(stateToProps, dispatchToProps)(Todoslines);
+
 
 

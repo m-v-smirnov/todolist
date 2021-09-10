@@ -4,6 +4,9 @@ import Todosleft from './Todosleft';
 import Todosisdone from './Todosisdone';
 import styles from './Todos.module.css';
 
+import {addTodo as addTodoAction,deleteTodo as deleteTodoAction, deleteAllDone as deleteAllDoneAction} from '../store/actions';
+import { connect } from "react-redux";
+
 
 class Todos extends React.Component {
 	state = {
@@ -17,8 +20,11 @@ class Todos extends React.Component {
 		this.setState({ value: event.target.value });
 	}
 
+
 	handleSubmit = (event) => {
-		const newArr = this.state.todosArr.slice();
+		//const newArr = this.state.todosArr.slice();
+		//const newArr = store.getState().todos;
+
 		event.preventDefault();
 		if (this.state.value) {
 			const obj = {
@@ -27,12 +33,14 @@ class Todos extends React.Component {
 				id: this.state.itemId,
 			};
 
-			newArr.push(obj);
+			this.props.addTodo(obj);
+			//newArr.push(obj);
 			this.setState({
 				value: '',
-				todosArr: newArr,
+				//todosArr: newArr,
 				itemId: this.state.itemId + 1
 			})
+			console.log(this.props.todos);
 		}
 	}
 
@@ -48,30 +56,23 @@ class Todos extends React.Component {
 	}
 
 	deleteElemById = (id) => {
-		this.setState({
-			todosArr: this.state.todosArr.filter((item) => {
-				return item.id !== id;
-			})
-		});
+		this.props.deleteTodo(id);
 	}
 
 	deleteAllIsDone = () => {
-		this.setState({
-			todosArr: this.state.todosArr.filter((item) => {
-				return item.isdone === false;
-			})
-		});
+		this.props.deleteAllDone();
 		this.setState({allActive : true});
 	}
 
 	notAllActive = () => {
-		for (let i=0;i<this.state.todosArr.length; i++) {
-			if (this.state.todosArr[i].isdone) {
+		for (let i=0;i<this.props.todos.length; i++) {
+			if (this.props.todos[i].isdone) {
 				return true;	
 			}
 		}
 		return false;
 	}
+	
 
 	render() {
 		return (
@@ -90,7 +91,7 @@ class Todos extends React.Component {
 					/>
 				</form>
 				<div>
-					{this.state.todosArr.map((elem, index) =>
+					{this.props.todos.map((elem, index) =>
 						<Todoslines
 							elem={elem}
 							index={index}
@@ -104,7 +105,7 @@ class Todos extends React.Component {
 				</div>
 				<div className={styles.controls}>
 					<div>
-						<Todosleft arr={this.state.todosArr} />
+						<Todosleft arr={this.props.todos} />
 					</div>
 					<div>
 						<a
@@ -158,11 +159,27 @@ class Todos extends React.Component {
 						> 
 							delete all completed 
 						</a>
-						<Todosisdone arr={this.state.todosArr}/>
+						<Todosisdone arr={this.props.todos}/>
 					</div>
 				</div>
 			</div>)
 	}
 }
 
-export default Todos;
+
+
+const dispatchToProps = (dispatch) => {
+	return {
+		addTodo : (obj) => dispatch(addTodoAction(obj)),
+		deleteTodo: (id) => dispatch(deleteTodoAction(id)),
+		deleteAllDone: (id) => dispatch(deleteAllDoneAction(id))
+	}
+}
+
+const stateToProps = (state) => {
+	return {
+		todos: state.todoStore.todos
+	}
+}
+export default connect(stateToProps, dispatchToProps)(Todos);
+

@@ -1,24 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-
 import { Provider } from 'react-redux'; 
-import { createStore } from 'redux';
-import {allReducer} from './store/';
-
 import reportWebVitals from './reportWebVitals';
+import {store} from './store/index';
 
-//import {actionHi} from './store/index'
-
-const store = createStore(allReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
-
-/*store.dispatch(actionHi('hi'));
-store.dispatch(actionHi({
-  first: 'like',
-  second: [0,2,4,5]
-}));
-store.dispatch(actionHi({isDone: true}));*/
 
 ReactDOM.render(
   <Provider store={store}>

@@ -4,17 +4,19 @@ import Todosleft from './Todosleft';
 import Todosisdone from './Todosisdone';
 import styles from './Todos.module.css';
 
-import {addTodo as addTodoAction,deleteTodo as deleteTodoAction, deleteAllDone as deleteAllDoneAction} from '../store/actions';
-import { connect } from "react-redux";
+import { addTodo as addTodoAction } from '../store/actions';
+import { editTodo as editTodoAction } from '../store/actions';
+import { deleteAllDone as deleteAllDoneAction } from '../store/actions';
+import { setVisibilityFilter as setVisibilityFilterAction } from '../store/actions';
+import { connect } from 'react-redux';
+import { createSelector } from 'reselect';
 
 
 class Todos extends React.Component {
 	state = {
-				viewRepres: 0,
-				value: '',
-				todosArr: [],
-				itemId: 0,
-			}
+		value: '',
+		//itemId: 0,
+	}
 
 	handleChange = (event) => {
 		this.setState({ value: event.target.value });
@@ -22,59 +24,45 @@ class Todos extends React.Component {
 
 
 	handleSubmit = (event) => {
-		//const newArr = this.state.todosArr.slice();
-		//const newArr = store.getState().todos;
 
 		event.preventDefault();
-		if (this.state.value) {
-			const obj = {
-				item: this.state.value,
-				isdone: false,
-				id: this.state.itemId,
-			};
+		//	if (this.state.value) {
+		//	const obj = {
+		//	item: this.state.value,
+		//		isdone: false,
+		//		id: this.state.itemId,
+		//};
 
-			this.props.addTodo(obj);
-			//newArr.push(obj);
-			this.setState({
-				value: '',
-				//todosArr: newArr,
-				itemId: this.state.itemId + 1
-			})
-			console.log(this.props.todos);
-		}
+		this.props.addTodo(this.state.value);
+		this.setState({
+			value: '',
+			//itemId: this.state.itemId + 1
+		})
+
 	}
+
 
 	setItem = (str, index) => {
-		const newArr = this.state.todosArr.slice();
-		newArr[index].item = str;
-		this.setState({ todosArr: [...newArr] });
-	}
-	setItemStatus = (state, index) => {
-		const newArr = this.state.todosArr.slice();
-		newArr[index].isdone = state;
-		this.setState({ todosArr: [...newArr] });
-	}
-
-	deleteElemById = (id) => {
-		this.props.deleteTodo(id);
+		this.props.editTodo(str, index);
 	}
 
 	deleteAllIsDone = () => {
 		this.props.deleteAllDone();
-		this.setState({allActive : true});
+		//this.setState({ allActive: true });
 	}
 
 	notAllActive = () => {
-		for (let i=0;i<this.props.todos.length; i++) {
+		for (let i = 0; i < this.props.todos.length; i++) {
 			if (this.props.todos[i].isdone) {
-				return true;	
+				return true;
 			}
 		}
 		return false;
 	}
-	
+
 
 	render() {
+		console.log("rerender");
 		return (
 			<div className={styles.common}>
 				<div className={styles.header}>
@@ -91,14 +79,11 @@ class Todos extends React.Component {
 					/>
 				</form>
 				<div>
-					{this.props.todos.map((elem, index) =>
+					{this.props.todosFitlered.map((elem) =>
 						<Todoslines
 							elem={elem}
-							index={index}
-							del={this.deleteElemById}
+							index={elem.id}
 							setItem={this.setItem}
-							setItemStatus={this.setItemStatus}
-							rep={this.state.viewRepres}
 							key={elem.id}
 						/>
 					)}
@@ -109,39 +94,39 @@ class Todos extends React.Component {
 					</div>
 					<div>
 						<a
-							className={(this.state.viewRepres === 0)
+							className={(this.props.filter === 0)
 								? styles.buttonActive
 								: styles.button
 							}
 							href="#all"
 							onClick={(e) => {
-								this.setState({ viewRepres: 0 });
+								this.props.setVisibilityFilter(0);
 								e.preventDefault();
 							}}
 						>
 							All
 						</a>
 						<a
-							className={(this.state.viewRepres === 1)
+							className={(this.props.filter === 1)
 								? styles.buttonActive
 								: styles.button
 							}
 							href="#active"
 							onClick={(e) => {
-								this.setState({ viewRepres: 1 });
+								this.props.setVisibilityFilter(1);
 								e.preventDefault();
 							}}
 						>
 							Active
 						</a>
 						<a
-							className={(this.state.viewRepres === 2)
+							className={(this.props.filter === 2)
 								? styles.buttonActive
 								: styles.button
 							}
 							href="#complete"
 							onClick={(e) => {
-								this.setState({ viewRepres: 2 });
+								this.props.setVisibilityFilter(2);
 								e.preventDefault();
 							}}
 						>
@@ -154,12 +139,11 @@ class Todos extends React.Component {
 							href="#deleteAllcomleted"
 							onClick={(e) => {
 								this.deleteAllIsDone();
-								e.preventDefault();
 							}}
-						> 
-							delete all completed 
+						>
+							delete all completed
 						</a>
-						<Todosisdone arr={this.props.todos}/>
+						<Todosisdone arr={this.props.todos} />
 					</div>
 				</div>
 			</div>)
@@ -167,18 +151,36 @@ class Todos extends React.Component {
 }
 
 
-
 const dispatchToProps = (dispatch) => {
 	return {
-		addTodo : (obj) => dispatch(addTodoAction(obj)),
-		deleteTodo: (id) => dispatch(deleteTodoAction(id)),
-		deleteAllDone: (id) => dispatch(deleteAllDoneAction(id))
+		addTodo: (value) => dispatch(addTodoAction(value)),
+		deleteAllDone: () => dispatch(deleteAllDoneAction()),
+		setVisibilityFilter: (filter) => dispatch(setVisibilityFilterAction(filter)),
+		editTodo: (str, id) => dispatch(editTodoAction(str, id)),
 	}
 }
+const getFilter = (state) => state.todoStore.filterType;
+
+const getFilterSelector = createSelector(
+	getFilter,
+	(state) => state.todoStore.todos,
+	(filter, todos) => todos.filter(i => {
+		if (filter === 0) return true;
+		if (filter === 1) {
+			return !i.isdone;
+		}
+		if (filter === 2) {
+			return i.isdone;
+		}
+	}),
+);
+
 
 const stateToProps = (state) => {
 	return {
-		todos: state.todoStore.todos
+		todos: state.todoStore.todos,
+		todosFitlered: getFilterSelector(state),
+		filter: state.todoStore.filterType,
 	}
 }
 export default connect(stateToProps, dispatchToProps)(Todos);

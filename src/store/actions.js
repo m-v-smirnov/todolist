@@ -1,31 +1,40 @@
+import {actionTypes} from './actionTypes';
 
 export const addTodo = (todo) => ({
-  type: 'ADD_TODO',
+  type: actionTypes.addTodo,
   payload: {
     todo
   }
 });
 
+export const editTodo = (str,id) => ({
+  type: actionTypes.editTodo,
+  payload: {
+    str,
+    id
+  }
+});
+
 export const toggleTodo = (id) => ({
-  type: 'TOGGLE_TODO',
+  type: actionTypes.toggleTodo,
   payload: {
     id
   }
 });
 
 export const deleteTodo = (id) => ({
-  type: 'DELETE_TODO',
+  type: actionTypes.deleteTodo,
   payload: {
     id
   } 
 });
 
 export const deleteAllDone = () => ({
-  type: 'DELETE_ALL_DONE'
+  type: actionTypes.deleteAllDone
 });
 
 export const setVisibilityFilter = (filter) => ({
-  type: 'SET_VISIBILITY_FILTER',
+  type: actionTypes.setVisibilityFilter,
   payload: {
     filter
   }

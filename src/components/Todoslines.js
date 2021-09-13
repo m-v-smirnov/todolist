@@ -1,55 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import styles from './Todoslines.module.css';
-import {toggleTodo as toggleTodoAction} from '../store/actions';
+import { toggleTodo as toggleTodoAction } from '../store/actions';
+import {deleteTodo as deleteTodoAction} from '../store/actions';
 import { connect } from "react-redux";
 
 function Todoslines(props) {
-	const [inputState, setState] = useState(false);
 	const [inputEditing, setEditing] = useState(false);
-	const displayElem = (props.rep === 0)
-		|| (props.rep === 1 && !inputState)
-		|| (props.rep === 2 && inputState);
 
+	const onInputBlur = () => {
+		setEditing(false);
+	}
 
+	const onChangeEditHandler = (e) => {
+		props.setItem(e.target.value, props.elem.id)
+	}
+	const onClickLabel = () => {
+		setEditing(true);
+	}
+	const onChangeInputHandler = () => {
+		props.toggleTodo(props.elem.id);
+	}
+	const onClickDelete = () => {
+		props.deleteTodo(props.elem.id);
+	}
 	return (
-		<div className={styles.list}
-			style={{ display: displayElem ? "" : "none" }}>
+		<div className={styles.list}>
 			<input
 				type="checkbox"
 				id={props.elem.id}
 				name={props.elem.id}
-				value={props.isDone}
-				onChange={(e) => {
-					setState(e.target.checked);
-					props.toggleTodo(props.elem.id);
-				}
-				}
+				value={props.elem.isdone}
+				onChange={onChangeInputHandler}
 			/>
 			{!inputEditing
 				? <label htmlFor={props.elem.id}
-					onClick={(e) => {
-						setEditing(true);
-						e.preventDefault();
-					}}
+					onClick={onClickLabel}
 				>
 					{props.elem.item}
 				</label>
-				: <input 
+				: <input
 					autoFocus
 					value={props.elem.item}
-					onBlur={(e) => {
-						setEditing(false);
-					}}
-					onChange={(e) => props.setItem(e.target.value,props.index)}
-					>
+					onBlur={onInputBlur}
+					onChange={onChangeEditHandler}
+				>
 				</input>
 			}
 			<button
 				className={styles.del_button}
-				onClick={(e) => {
-					props.del(props.elem.id);
-					e.preventDefault();
-				}}>
+				onClick={onClickDelete}
+			>
 				X
 			</button>
 
@@ -59,13 +59,14 @@ function Todoslines(props) {
 
 const dispatchToProps = (dispatch) => {
 	return {
-		toggleTodo : (id) => dispatch(toggleTodoAction(id))
+		toggleTodo: (id) => dispatch(toggleTodoAction(id)),
+		deleteTodo: (id) => dispatch(deleteTodoAction(id)),
 	}
 }
 
 const stateToProps = (state) => {
 	return {
-		isDone: state.todoStore.todos.isdone
+		isDone: state.todoStore.todos.isdone,
 	}
 }
 export default connect(stateToProps, dispatchToProps)(Todoslines);

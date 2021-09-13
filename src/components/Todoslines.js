@@ -30,6 +30,7 @@ function Todoslines(props) {
 				id={props.elem.id}
 				name={props.elem.id}
 				value={props.elem.isdone}
+				checked={props.elem.isdone}
 				onChange={onChangeInputHandler}
 			/>
 			{!inputEditing

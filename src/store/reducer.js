@@ -10,11 +10,13 @@ export const reducer = (state = initialState, action) => {
     case 'ADD_TODO':
       return {
         ...state,
-        todos: [...state.todos,
-      { item: action.payload.todo,
-        isdone: false,
-        id: ids++
-      }]
+        todos: [
+          ...state.todos,
+          {
+            item: action.payload.todo,
+            isdone: false,
+            id: ids++
+          }]
       }
     case 'EDIT_TODO':
       return {
@@ -52,7 +54,7 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         todos: state.todos.filter((item) => {
-          return item.isdone !== true;
+          return !item.isdone;
         })
       }
     case 'SET_VISIBILITY_FILTER':

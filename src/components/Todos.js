@@ -15,7 +15,6 @@ import { createSelector } from 'reselect';
 class Todos extends React.Component {
 	state = {
 		value: '',
-		//itemId: 0,
 	}
 
 	handleChange = (event) => {
@@ -26,17 +25,10 @@ class Todos extends React.Component {
 	handleSubmit = (event) => {
 
 		event.preventDefault();
-		//	if (this.state.value) {
-		//	const obj = {
-		//	item: this.state.value,
-		//		isdone: false,
-		//		id: this.state.itemId,
-		//};
 
 		this.props.addTodo(this.state.value);
 		this.setState({
 			value: '',
-			//itemId: this.state.itemId + 1
 		})
 
 	}
@@ -48,7 +40,6 @@ class Todos extends React.Component {
 
 	deleteAllIsDone = () => {
 		this.props.deleteAllDone();
-		//this.setState({ allActive: true });
 	}
 
 	notAllActive = () => {
@@ -93,56 +84,47 @@ class Todos extends React.Component {
 						<Todosleft arr={this.props.todos} />
 					</div>
 					<div>
-						<a
+						<button
 							className={(this.props.filter === 0)
 								? styles.buttonActive
 								: styles.button
 							}
-							href="#all"
 							onClick={(e) => {
 								this.props.setVisibilityFilter(0);
-								e.preventDefault();
 							}}
 						>
 							All
-						</a>
-						<a
+						</button>
+						<button
 							className={(this.props.filter === 1)
 								? styles.buttonActive
 								: styles.button
 							}
-							href="#active"
 							onClick={(e) => {
 								this.props.setVisibilityFilter(1);
-								e.preventDefault();
 							}}
 						>
 							Active
-						</a>
-						<a
+						</button>
+						<button
 							className={(this.props.filter === 2)
 								? styles.buttonActive
 								: styles.button
 							}
-							href="#complete"
 							onClick={(e) => {
 								this.props.setVisibilityFilter(2);
-								e.preventDefault();
 							}}
 						>
 							Completed
-						</a>
+						</button>
 					</div>
 					<div className={this.notAllActive() ? styles.hideDelButton : styles.delButton}>
-						<a
+						<button
 							className={styles.button}
-							href="#deleteAllcomleted"
-							onClick={(e) => {
-								this.deleteAllIsDone();
-							}}
+							onClick={this.deleteAllIsDone}
 						>
 							delete all completed
-						</a>
+						</button>
 						<Todosisdone arr={this.props.todos} />
 					</div>
 				</div>
@@ -151,13 +133,12 @@ class Todos extends React.Component {
 }
 
 
-const dispatchToProps = (dispatch) => {
-	return {
-		addTodo: (value) => dispatch(addTodoAction(value)),
-		deleteAllDone: () => dispatch(deleteAllDoneAction()),
-		setVisibilityFilter: (filter) => dispatch(setVisibilityFilterAction(filter)),
-		editTodo: (str, id) => dispatch(editTodoAction(str, id)),
-	}
+const dispatchToProps = {
+	addTodo: addTodoAction,
+	deleteAllDone: deleteAllDoneAction,
+	setVisibilityFilter: setVisibilityFilterAction,
+	editTodo: editTodoAction,
+
 }
 const getFilter = (state) => state.todoStore.filterType;
 

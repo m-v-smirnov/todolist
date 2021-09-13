@@ -65,12 +65,8 @@ const dispatchToProps = (dispatch) => {
 	}
 }
 
-const stateToProps = (state) => {
-	return {
-		isDone: state.todoStore.todos.isdone,
-	}
-}
-export default connect(stateToProps, dispatchToProps)(Todoslines);
+
+export default connect(null, dispatchToProps)(Todoslines);
 
 
 
